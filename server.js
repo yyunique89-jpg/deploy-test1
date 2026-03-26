@@ -118,7 +118,12 @@ app.post('/api/story', async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`🔮 전생 탐구 서버 시작! http://localhost:${PORT}`);
-});
+// 로컬 실행 시에만 listen (Vercel 서버리스에서는 export만 사용)
+if (require.main === module) {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => {
+    console.log(`🔮 전생 탐구 서버 시작! http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;
