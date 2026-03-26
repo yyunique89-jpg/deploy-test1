@@ -7,7 +7,10 @@ const app = express();
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+// OpenAI는 API 호출 시점에 초기화 (환경변수 없을 때 크래시 방지)
+function getOpenAI() {
+  return new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+}
 const jobs = require('./data/jobs.json');
 const deaths = require('./data/deaths.json');
 
@@ -104,6 +107,7 @@ app.post('/api/story', async (req, res) => {
 - 2~3문장 정도의 길이로 각 문단 작성`;
 
   try {
+    const openai = getOpenAI();
     const completion = await openai.chat.completions.create({
       model: 'gpt-4o-mini',
       messages: [{ role: 'user', content: prompt }],
